@@ -1,0 +1,57 @@
+import java.util.concurrent.locks.ReentrantLock;
+
+//methods
+/*
+ * constructor
+ * check to see if road is clear(road lock is unlocked if true then lock)
+ * do random thing on the road(when done release lock)
+ * 
+ */
+public class Villager implements Runnable {
+	public static ReentrantLock road = new ReentrantLock();
+	
+	Villager()
+	{
+	}
+	
+	public void doSomethingOnRoad()
+	{
+		System.out.println("Eatting Donut");
+		waitRandomTime();
+	}
+	
+	public void waitRandomTime() 
+	{
+		long waitTime = (long) (3000 + Math.random() * 2000);
+		try {
+			Thread.sleep(waitTime);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	public void run() {
+
+		boolean roadTravelled = false;
+		while ( !roadTravelled )//if no then keep waiting to take lock 
+		{
+			//check if lock is open
+			if ( !road.isLocked() )
+			{
+				//if yes take lock
+				road.lock();
+				roadTravelled = true; 
+				doSomethingOnRoad();
+				road.unlock();
+			}
+			else
+			{
+				waitRandomTime();
+			}
+			
+		}
+
+	}
+
+}
