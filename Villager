@@ -9,9 +9,10 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class Villager implements Runnable {
 	public static ReentrantLock road = new ReentrantLock();
-	
-	Villager()
+	String village;
+	Villager(String village)
 	{
+		this.village = village;
 	}
 	
 	public void doSomethingOnRoad()
