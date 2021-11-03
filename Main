@@ -1,11 +1,36 @@
-
+import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Main {
 	
+	public static int populateRandomNumberVillagers()
+	{
+		return (int) (2 + Math.random() * 20);
+	}
 
 	public static void main(String[] args) {
 		System.out.println("Gotta go to werk");
 		Villager e = new Villager("East");
+		int numEastVillagers = populateRandomNumberVillagers();
+		int numWestVillagers = populateRandomNumberVillagers();
+		
+		ArrayList<Villager> villagers = new ArrayList<Villager>(); 
+		ExecutorService totalPopulation = Executors.newFixedThreadPool(numEastVillagers+numWestVillagers);
+		for ( int i = 0; i < numEastVillagers; i++ )
+		{
+			villagers.add(new Villager("East"));
+		}
+		
+		for ( int i = 0; i < numWestVillagers; i++ )
+		{
+			villagers.add(new Villager("West"));
+		}
+		
+		for ( int i = 0; i < numEastVillagers+numWestVillagers; i++ )
+		{
+			totalPopulation.equals(villagers.get(i));
+		}
 	}
 
 }
