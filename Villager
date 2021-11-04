@@ -9,7 +9,24 @@ import java.util.concurrent.locks.ReentrantLock;
  * 
  */
 public class Villager implements Runnable {
-	ArrayList<String> activities = new ArrayList<String>();
+	
+	public static ArrayList<String> activities = new ArrayList<String>();
+	
+	public static void initializeActivities ()
+	{
+		activities.add("Eating donut");
+		activities.add("Playing with puppies");
+		activities.add("Chasing donkeys");
+		activities.add("Dreaming about the west...");
+		activities.add("Kicking a rock");
+		activities.add("Admiring scenery");
+	}
+	
+	public void getActivity()
+	{
+		System.out.println(activities.get((int) (1 + Math.random() * (activities.size() -1))));
+	}
+	
 	public static ReentrantLock road = new ReentrantLock();
 	String village;
 	Villager(String village)
@@ -19,7 +36,7 @@ public class Villager implements Runnable {
 	
 	public void doSomethingOnRoad()
 	{
-		System.out.println("Eatting Donut");
+		getActivity();
 		waitRandomTime();
 	}
 	
