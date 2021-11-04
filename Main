@@ -6,15 +6,14 @@ public class Main {
 	
 	public static int populateRandomNumberVillagers()
 	{
-		return (int) (2 + Math.random() * 20);
+		return (int) (2 + Math.random() * 4);
 	}
 
 	public static void main(String[] args) {
-		System.out.println("Gotta go to werk");
-		Villager e = new Villager("East");
+		System.out.println("Start of road usage");
 		int numEastVillagers = populateRandomNumberVillagers();
 		int numWestVillagers = populateRandomNumberVillagers();
-		
+		System.out.println("Pop East " + numEastVillagers + " Pop West " + numWestVillagers );
 		ArrayList<Villager> villagers = new ArrayList<Villager>(); 
 		ExecutorService totalPopulation = Executors.newFixedThreadPool(numEastVillagers+numWestVillagers);
 		for ( int i = 0; i < numEastVillagers; i++ )
@@ -29,8 +28,9 @@ public class Main {
 		
 		for ( int i = 0; i < numEastVillagers+numWestVillagers; i++ )
 		{
-			totalPopulation.equals(villagers.get(i));
+			totalPopulation.execute(villagers.get(i));
 		}
+		totalPopulation.shutdown();
 	}
 
 }
