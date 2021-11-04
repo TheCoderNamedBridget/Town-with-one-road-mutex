@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.concurrent.locks.ReentrantLock;
 
 //methods
@@ -8,6 +9,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * 
  */
 public class Villager implements Runnable {
+	ArrayList<String> activities = new ArrayList<String>();
 	public static ReentrantLock road = new ReentrantLock();
 	String village;
 	Villager(String village)
@@ -35,6 +37,7 @@ public class Villager implements Runnable {
 	public void run() {
 
 		boolean roadTravelled = false;
+		System.out.println("Villager from " + village + " with id " + Thread.currentThread() + " is waiting to enter road");
 		while ( !roadTravelled )//if no then keep waiting to take lock 
 		{
 			//check if lock is open
@@ -42,9 +45,12 @@ public class Villager implements Runnable {
 			{
 				//if yes take lock
 				road.lock();
+				System.out.println("Villager from " + village + " with id " + Thread.currentThread() + " entered road");
+				
 				roadTravelled = true; 
 				doSomethingOnRoad();
 				road.unlock();
+				System.out.println("Villager from " + village + " with id " + Thread.currentThread() + " arrived at destination");
 			}
 			else
 			{
