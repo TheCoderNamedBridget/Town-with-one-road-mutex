@@ -1,38 +1,81 @@
 import java.util.ArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.locks.ReentrantLock;
 
-public class Main {
+//methods
+/*
+ * constructor
+ * check to see if road is clear(road lock is unlocked if true then lock)
+ * do random thing on the road(when done release lock)
+ * 
+ */
+public class Villager implements Runnable {
 	
+	public static ArrayList<String> activities = new ArrayList<String>();
 	
-	public static int populateRandomNumberVillagers()
+	public static void initializeActivities ()
 	{
-		return (int) (2 + Math.random() * 4);
+		activities.add("Eating donut");
+		activities.add("Playing with puppies");
+		activities.add("Chasing donkeys");
+		activities.add("Dreaming about the west...");
+		activities.add("Kicking a rock");
+		activities.add("Admiring scenery");
 	}
+	
+	public void getActivity()
+	{
+		System.out.println(activities.get((int) (1 + Math.random() * (activities.size() -1))));
+	}
+	
+	public static ReentrantLock road = new ReentrantLock();
+	String village;
+	Villager(String village)
+	{
+		this.village = village;
+	}
+	
+	public void doSomethingOnRoad()
+	{
+		getActivity();
+		waitRandomTime();
+	}
+	
+	public void waitRandomTime() 
+	{
+		long waitTime = (long) (3000 + Math.random() * 2000);
+		try {
+			Thread.sleep(waitTime);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	public void run() {
 
-	public static void main(String[] args) {
-		System.out.println("Start of road usage");
-		int numEastVillagers = populateRandomNumberVillagers();
-		int numWestVillagers = populateRandomNumberVillagers();
-		Villager.initializeActivities();
-		System.out.println("Pop East " + numEastVillagers + " Pop West " + numWestVillagers );
-		ArrayList<Villager> villagers = new ArrayList<Villager>(); 
-		ExecutorService totalPopulation = Executors.newFixedThreadPool(numEastVillagers+numWestVillagers);
-		for ( int i = 0; i < numEastVillagers; i++ )
+		boolean roadTravelled = false;
+		System.out.println("Villager from " + village + " with id " + Thread.currentThread() + " is waiting to enter road");
+		while ( !roadTravelled )//if no then keep waiting to take lock 
 		{
-			villagers.add(new Villager("East"));
+			//check if lock is open
+			if ( !road.isLocked() )
+			{
+				//if yes take lock
+				road.lock();
+				System.out.println("Villager from " + village + " with id " + Thread.currentThread() + " entered road");
+				
+				roadTravelled = true; 
+				doSomethingOnRoad();
+				road.unlock();
+				System.out.println("Villager from " + village + " with id " + Thread.currentThread() + " arrived at destination");
+			}
+			else
+			{
+				waitRandomTime();
+			}
+			
 		}
-		
-		for ( int i = 0; i < numWestVillagers; i++ )
-		{
-			villagers.add(new Villager("West"));
-		}
-		
-		for ( int i = 0; i < numEastVillagers+numWestVillagers; i++ )
-		{
-			totalPopulation.execute(villagers.get(i));
-		}
-		totalPopulation.shutdown();
+
 	}
 
 }
